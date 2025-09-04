@@ -1,0 +1,647 @@
+<div class="datepicker d-flex align-items-center">
+    <kendo-datepicker calendarType="infinite" [format]="dateFormat" [max]="MaxDate" [(ngModel)]="alertdashboardbroker.AlertDate"
+        class="w-auto"></kendo-datepicker>
+</div>
+<div class="product_maxheightwindow">
+    <div class="productbg-container">
+        <div class="alertlistview">
+            <div class="d-flex flex-wrap mb-2 mb-sm-0">
+                <div class="form-group mr-2 w-15">
+                    <i class="fa fa-angle-down down_arrow" aria-hidden="true"></i>
+                    <label>Domain</label>
+                    <kendo-multiselect [autoClose]="false" [data]="domainlist" [textField]="'name'" [valueField]="'domainid'"
+                        [kendoMultiSelectSummaryTag]="0" placeholder="Select Domain" [(ngModel)]="selecteddomain"
+                        (valueChange)="onDomainChange()">
+                        <ng-template kendoMultiSelectHeaderTemplate>
+                            <label class="k-checkbox-label p-1" (click)="toggleSelectAll()">
+                                {{ isAllSelected ? 'Deselect All' : 'Select All' }}
+                            </label>
+                        </ng-template>
+                        <ng-template kendoMultiSelectItemTemplate let-dataItem>
+                            <label class="k-checkbox-label">{{ dataItem.name }}</label>
+                        </ng-template>
+                        <ng-template kendoMultiSelectGroupTagTemplate let-dataItems>
+                            {{ dataItems.length }} selected
+                        </ng-template>
+                    </kendo-multiselect>
+                </div>
+                <!-- <div class="form-group mr-2 w-20">
+                    <label>Boundary </label>
+                   <div class="customKendoWindowPadding" *ngIf="(selecteddomain && selecteddomain.length)"> <ngx-eventdialog (SelectedOrg)="GetSelectedOrgLevel($event)" [changingMenuState]="changingMenuStateValue" *ngIf="!EventToggled"></ngx-eventdialog></div>
+                   <div *ngIf="!(selecteddomain && selecteddomain.length)"><kendo-dropdownlist  disabled style="width:206px" ></kendo-dropdownlist></div>
+                </div> -->
+                <div class="form-group mr-2 w-12">
+                    <label>Alert Type</label>
+                    <kendo-dropdownlist [data]="alerttypelist" textField="name" valueField="Id" [(ngModel)]="selectedalerttype"
+                        class="w-100" (valueChange)="onAlertType()">
+                    </kendo-dropdownlist>
+                </div>
+                <div class="form-group mr-2 w-15">
+                    <i class="fa fa-angle-down down_arrow" aria-hidden="true"></i>
+                    <label>Alert Status</label>
+                    <kendo-multiselect [autoClose]="false" [data]="statuslist" [textField]="'statusname'" [valueField]="'id'"
+                        [kendoMultiSelectSummaryTag]="0" placeholder="Select Status" [(ngModel)]="selectedstatus"
+                        (valueChange)="ResetDropdown()">
+                        <ng-template kendoMultiSelectItemTemplate let-dataItem>
+                            <label class="k-checkbox-label">{{ dataItem.statusname }}</label>
+                        </ng-template>
+                        <ng-template kendoMultiSelectGroupTagTemplate let-dataItems>
+                            {{ dataItems.length }} selected
+                        </ng-template>
+                    </kendo-multiselect>
+                </div>
+                <div class="form-group mr-2 w-15">
+                    <i class="fa fa-angle-down down_arrow" aria-hidden="true"></i>
+                    <label>Alert Name</label>
+                    <kendo-multiselect [autoClose]="false" [data]="alertnamelist" [textField]="'name'" [valueField]="'incidentid'"
+                        [kendoMultiSelectSummaryTag]="0" placeholder="Select alert name" [(ngModel)]="selectedalertname"
+                        (valueChange)="onIncidentChange()">
+                        <ng-template kendoMultiSelectHeaderTemplate>
+                            <label class="k-checkbox-label p-1" (click)="toggleSelectAlertAll()" *ngIf="this.alertnamelist.length>0">
+                                {{ isAllAlertSelected ? 'Deselect All' : 'Select All' }}
+                            </label>
+                        </ng-template>
+
+                        <ng-template kendoMultiSelectItemTemplate let-dataItem>
+                            <label class="k-checkbox-label">{{ dataItem.name }}</label>
+                        </ng-template>
+                        <ng-template kendoMultiSelectGroupTagTemplate let-dataItems>
+                            {{ dataItems.length }} selected
+                        </ng-template>
+                    </kendo-multiselect>
+                </div>
+                <div class="form-group mr-2 w-15">
+                    <i class="fa fa-angle-down down_arrow" aria-hidden="true"></i>
+                    <label>Alert Severity</label>
+                    <kendo-multiselect [autoClose]="false" [data]="severitylist" [kendoMultiSelectSummaryTag]="0"
+                        placeholder="Select Severity" [(ngModel)]="selectedseverity">
+                        <ng-template kendoMultiSelectItemTemplate let-dataItem>
+                            <label class="k-checkbox-label">{{ dataItem }}</label>
+                        </ng-template>
+                        <ng-template kendoMultiSelectGroupTagTemplate let-dataItems>
+                            {{ dataItems.length }} selected
+                        </ng-template>
+                    </kendo-multiselect>
+                </div>
+                <div class="form-group mr-2 w-15">
+                    <i class="fa fa-angle-down down_arrow" aria-hidden="true"></i>
+                    <label>Assigned To</label>
+                    <kendo-multiselect [autoClose]="false" [data]="owneroncurrentlist" [textField]="'ownername'"
+                        [valueField]="'id'" [kendoMultiSelectSummaryTag]="0" placeholder="Assign To" [(ngModel)]="selectedowneroncurrent">
+                        <ng-template kendoMultiSelectHeaderTemplate>
+                            <label class="k-checkbox-label p-1" (click)="toggleSelectUserAll()" *ngIf="this.alertnamelist.length>0">
+                                {{ isAllUserSelected ? 'Deselect All' : 'Select All' }}
+                            </label>
+                        </ng-template>
+                        <ng-template kendoMultiSelectItemTemplate let-dataItem>
+                            <label class="k-checkbox-label">{{ dataItem.ownername }}</label>
+                        </ng-template>
+                        <ng-template kendoMultiSelectGroupTagTemplate let-dataItems>
+                            {{ dataItems.length }} selected
+                        </ng-template>
+                    </kendo-multiselect>
+                </div>
+                <div class="d-flex align-items-center">
+                    <button kendoButton (click)="Searchalert(null,true)" class="k-button k-primary" style="margin-top:7px">Search
+                        Alert</button>
+                </div>
+                <!-- <div class="mr-2">
+                    <button type="button" (click)="generateExcel()" class="btn k-button" style="margin-top:7px;top: 17px;left: 10px;">
+                      <span class="mr-2"><i class="fas fa-file-excel"></i></span> Export to Excel
+                    </button>
+                </div> -->
+            </div>
+
+            <div class="productbg-innergrid d-block" id="kendoGrid">
+
+                <!-- #grid="kendoGrid" -->
+                <kendo-grid id="teste" [data]="gridData" #grid [style.height.%]="100" [pageSize]="state.take" [skip]="state.skip"
+                    [sort]="state.sort" [filter]="state.filter" [sortable]="true" [pageable]="true" [columnMenu]="{ filter: false,sort: false  }"
+                    (columnVisibilityChange)="onVisibilityChange($event)" (dataStateChange)="dataStateChange($event)"
+                    [selectable]="{enabled: true, checkboxOnly: true}" (pageChange)="onPageChange($event)"
+                    [selectedKeys]="mySelection" kendoGridSelectBy="alertdetailsid" (selectedKeysChange)="onSelectedKeysChange($event)">
+
+                    <ng-template kendoGridToolbarTemplate>
+                        <div class="d-flex">
+                            <!-- <div class="mr-2"><button class="k-button k-primary" (click)="AuthenticateAll()">&nbsp;Acknowledge All</button>
+                          </div> -->
+                            <div class="btn-right mr-2 ml-auto"><button type="button" class="btn k-button" (click)="exportFile('excel')">
+                                    <span class="mr-2"><i class="fas fa-file-excel"></i></span> Export to Excel</button>
+                            </div>
+                            <!-- <div class="btn-right mr-2 ml-auto"><button type="button" class="btn k-button" kendoGridExcelCommand>
+                                <span class="mr-2"><i class="fas fa-file-excel"></i></span> Export to Excel</button>
+                            </div> -->
+                            <!-- <div class="mr-2"><button type="button" class="btn k-button" kendoGridPDFCommand (click) ="exportFile('pdf')">
+                                <span class="mr-2"><i class="fas fa-file-pdf"></i></span> Export to PDF</button>
+                            </div> -->
+                            <!-- <div class="mr-2"><button type="button" class="btn k-button" (click)="exportElementAsImage('teste')">
+                               <span class="mr-2"><i class="fas fa-file-image"></i></span> Export to Image</button>
+                            </div>
+                            <div class="mr-2"><button type="button" class="btn k-button" (click)="ExportAsHTML()">
+                                <span class="mr-2"><i class="fas fa-file-code"></i></span> Export to HTML</button>
+                            </div> -->
+
+                        </div>
+                    </ng-template>
+
+                    <!-- code for excel -->
+                    <kendo-grid-excel fileName="AlertList.xlsx"></kendo-grid-excel>
+
+
+                    <!--code for PDF-->
+                    <kendo-grid-pdf #pdfnew fileName="AlertListView.pdf" [allPages]="true" paperSize="A3"
+                        [repeatHeaders]="true" [landscape]="true" [scale]="0.5">
+                        <kendo-grid-pdf-margin top="4cm" left="1cm" right="1cm" bottom="2cm"></kendo-grid-pdf-margin>
+                        <ng-template kendoGridPDFTemplate let-pageNum="pageNum" let-totalPages="totalPages">
+                            <div class="page-template">
+                                <div class="header" style="padding-bottom: 40px;">
+                                    <div style="float: right">
+                                        <!-- <img src="../../../../assets/images/amnex_logo.png" alt="amnex logo" width=55 height=10/> -->
+                                        <img src="../../../../assets/images/Outline_SmartCity.svg" alt="Outline logo" style="width: 200px;height:60px ;" />
+                                    </div>
+                                    <div style="float: left;">
+                                        <!-- <img src="../../../../assets/images/amnex_logo.png" alt="amnex logo" width=55 height=10/> -->
+                                        <img [src]="clientheaderpath" alt="Outline logo" style="height:70px ;" />
+                                    </div>
+                                    <div style="margin-top:20px; margin-bottom: 10px;padding-bottom: 50px;width:80%">
+
+                                        <table align="left" style="width:100%;text-align: left;">
+                                            <tr style="width:100%;">
+                                                <td style="width:100%;">Report Name: Alert List </td>
+                                            </tr>
+                                            <tr style="width:100%;">
+                                                <td style="width:100%;">Report Date: {{ ReportDate | date: 'dd-MM-yyyy
+                                                    h:mm:ss a'}}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="footer">
+                                    <!-- <div class="d-flex justify-content-between">
+
+                                        <div> Published By: <br /> {{UserName }} </div>
+
+                                        <div>Page {{ pageNum }} of {{ totalPages }} </div>
+
+                                        <div> Published TimeStamp: <br /> {{ ReportDate | date:
+                                            'dd-MM-yyyy h:mm:ss a'}} </div>
+
+                                    </div> -->
+
+                                </div>
+                            </div>
+                        </ng-template>
+                        <!-- <kendo-grid-column width="100px" [columnMenu]="false" field="alertdetailsid" title="Alert Id"></kendo-grid-column> -->
+                        <kendo-grid-column [columnMenu]="false" field="alertdetailsid" title="Alert Id" width="100px">
+                            <ng-template kendoGridCellTemplate let-dataItem>
+                                <span [ngStyle]="{'color': dataItem.parentId != 0 && dataItem.parentId != null ? 'red' : 'White'}">
+                                    {{ dataItem.alertdetailsid }}
+                                </span>
+                            </ng-template>
+                        </kendo-grid-column>
+                        <kendo-grid-column width="100px" [columnMenu]="false" field="parentId" title="Duplicate with linked Alert">
+                            <ng-template kendoGridCellTemplate let-dataItem>
+                                {{ dataItem.parentId === 0 || dataItem.parentId == null ? '' : dataItem.parentId }}
+                            </ng-template>
+                        </kendo-grid-column>
+                        <kendo-grid-column width="100px" [columnMenu]="false" field="domainname" title="Domain Name"></kendo-grid-column>
+                        <kendo-grid-column width="100px" [columnMenu]="false" field="alertname" title="Alert Name"></kendo-grid-column>
+                        <kendo-grid-column width="100px" [columnMenu]="false" field="assetid" title="Asset Name"></kendo-grid-column>
+                        <kendo-grid-column width="100px" [columnMenu]="false" field="description" title="Alert Description"></kendo-grid-column>
+                        <kendo-grid-column width="100px" [columnMenu]="false" field="orgname" title="Organization Name"></kendo-grid-column>
+                        <kendo-grid-column width="100px" [columnMenu]="false" field="ismanual" title="Is Manual">
+                            <ng-template kendoGridCellTemplate let-dataItem>
+                                <div class="text-center">
+                                    {{ (dataItem.ismanual)? 'Yes':'No' }}
+                                </div>
+                            </ng-template>
+                        </kendo-grid-column>
+                        <!-- <kendo-grid-column width="100px" [columnMenu]="false" field="islinked" title="Is Linked With Social Media"></kendo-grid-column> -->
+                        <kendo-grid-column width="100px" [columnMenu]="false" field="alertdate" title="Time Stamp">
+                            <!-- <ng-template kendoGridCellTemplate let-dataItem>
+                                <div class="text-center">
+                                    {{ (dataItem.alertdate+'Z') | date : datetimeFormat  }}
+                                </div>
+                            </ng-template> -->
+                        </kendo-grid-column>
+                        <kendo-grid-column width="100px" [columnMenu]="false" field="severity" title="Priority">
+                            <ng-template kendoGridCellTemplate let-dataItem>
+                                <div class="{{ (dataItem.severitycolor != '') ? 'current-severity' : 'no-severity'  }} p-1 text-center"
+                                    [style.backgroundColor]="dataItem.severitycolor !='' ? dataItem.severitycolor:colorCodepraority(dataItem.severity)">
+                                    {{ dataItem.severity }}
+                                </div>
+                            </ng-template>
+                        </kendo-grid-column>
+                        <kendo-grid-column width="100px" [columnMenu]="false" field="linkedsopname" title="Linked SOP"></kendo-grid-column>
+                        <kendo-grid-column width="100px" [columnMenu]="false" field="alteredsopsnamne" title="Altered SOP"></kendo-grid-column>
+                        <kendo-grid-column width="100px" [columnMenu]="false" field="isacknowledgedoncurrent" title="Acknowledged by Current Level">
+                            <ng-template kendoGridCellTemplate let-dataItem>
+                                <div class="text-center">
+                                    {{ (dataItem.isacknowledgedoncurrent)? 'Yes':'No' }}
+                                </div>
+                            </ng-template>
+                        </kendo-grid-column>
+                        <kendo-grid-column width="100px" [columnMenu]="false" field="currentescalationlevel" title="Current Escalation Level">
+                        </kendo-grid-column>
+                        <kendo-grid-column width="100px" [columnMenu]="false" field="owneroncurrent" title="Current Owner"></kendo-grid-column>
+                        <kendo-grid-column [columnMenu]="false" field="totaldurationspent" title="Total Duration Spent">
+                        </kendo-grid-column>
+                        <kendo-grid-column width="100px" [columnMenu]="false" field="currentstatus" title="Current Status">
+                            <ng-template kendoGridCellTemplate let-dataItem>
+                                <div class="current-status p-1 text-center" [style.backgroundColor]="colorCode(dataItem.currentstatus)">
+                                    {{ dataItem.currentstatus }}
+                                </div>
+                            </ng-template>
+                        </kendo-grid-column>
+                    </kendo-grid-pdf>
+
+                    <!-- <kendo-grid-checkbox-column width="40" [columnMenu]="false">
+                        <ng-template kendoGridHeaderTemplate let-dataItem let-idx="rowIndex1"> -->
+                    <!-- <div *ngIf="dataItem.rightsdetails.isabletoacknowledge">
+                                <input class="k-checkbox" id="selectAllCheckboxId"
+                                kendoGridSelectAllCheckbox [state]="selectAllState" (selectAllChange)="setSelect($event)" />
+                                <label class="k-checkbox-label" for="selectAllCheckboxId"></label>
+                            </div>
+                            <div *ngIf="!dataItem.rightsdetails.isabletoacknowledge">
+                                [rowClass]="rowClass" [disabled]="dataItem.isacknowledgedoncurrent"-->
+                    <!-- <input class="k-checkbox" id="selectAllCheckboxId"
+                                kendoGridSelectAllCheckbox [state]="selectAllState" (selectAllChange)="setSelect($event)" />
+                                <label class="k-checkbox-label" for="selectAllCheckboxId"></label> -->
+                    <!-- </div> -->
+                    <!-- </ng-template> -->
+                    <!-- </kendo-grid-checkbox-column> -->
+
+                    <kendo-grid-column title="Actions" width="180px" [locked]="true">
+                        <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                            <a href="javascript:;" class="px-1 actionButton" (click)="toggleShow(rowIndex,$event)">
+                                <span class="k-icon k-i-more-vertical"></span></a>
+                            <div *ngIf="currentcontexmenu == rowIndex" class="position-absoulatesliding" (clickOutside)="clickOutside()"
+                                [ngStyle]="{'top': menuTop, 'left': menuLeft}">
+                                <ul class="moreOptionList">
+                                    <!-- <li (click)="(dataItem.rightsdetails.isabletoeditalert) ? ActionTaken('boxeditalert',dataItem):null"
+                                    [ngClass]="{'disabled-link' : (!dataItem.rightsdetails.isabletoeditalert)}"><span class="mr-2">
+                                        <img src="../../../../../assets/images/alert/editalert.svg"></span>Edit Alert
+                                    </li> -->
+                                    <!-- <li (click)="(dataItem.rightsdetails.isabletolinkalert) ? ActionTaken('boxLinkalert',dataItem):null"
+                                    [ngClass]="{'disabled-link' : (!dataItem.rightsdetails.isabletolinkalert)}"><span class="mr-2">
+                                        <img src="../../../../../assets/images/alert/linkalert.svg"></span>Link Alert
+                                    </li> -->
+                                    <!-- <li (click)="(dataItem.rightsdetails.isabletosharetransfer) ? ActionTaken('boxsharealert',dataItem):null"
+                                    [ngClass]="{'disabled-link' : (!dataItem.rightsdetails.isabletosharetransfer)}"><span class="mr-2">
+                                        <img src="../../../../../assets/images/alert/sharealert.svg"></span>Share/Transfer Alert
+                                    </li> -->
+                                    <li (click)="(dataItem.rightsdetails.isabletopriority) ? ActionTaken('boxchangepriority',dataItem):null"
+                                        [ngClass]="{'disabled-link' : (!dataItem.rightsdetails.isabletopriority)}"><span
+                                            class="mr-2">
+                                            <img src="../../../../../assets/images/alert/changestatus.svg"></span>Change
+                                        Priority</li>
+                                    <li (click)="(dataItem.rightsdetails.isabletostatus) ? ActionTaken('boxchangestatus',dataItem):null"
+                                        [ngClass]="{'disabled-link' : (!dataItem.rightsdetails.isabletostatus)}"><span
+                                            class="mr-2">
+                                            <img src="../../../../../assets/images/alert/changestatus.svg"></span>Change
+                                        Status</li>
+                                    <li (click)="(dataItem.rightsdetails.isabletoaltersop) ? ActionTaken('boxalertsop',dataItem):null"
+                                        [ngClass]="{'disabled-link' : (!dataItem.rightsdetails.isabletoaltersop)}"><span
+                                            class="mr-2">
+                                            <img src="../../../../../assets/images/alert/altersop.svg"></span>Alter SOP
+                                    </li>
+                                    <!-- <li (click)="(dataItem.rightsdetails.isabletoterminate) ? ActionTaken('boxterminatesop',dataItem):null"
+                                    [ngClass]="{'disabled-link' : (!dataItem.rightsdetails.isabletoterminate)}"><span class="mr-2">
+                                        <img  src="../../../../../assets/images/alert/terminatesop.svg"></span>Terminate
+                                        SOP</li> -->
+                                    <!-- <li (click)="(dataItem.rightsdetails.isabletodispatch) ? ActionTaken('boxdispatchteam',dataItem):null"
+                                    [ngClass]="{'disabled-link' : (!dataItem.rightsdetails.isabletodispatch)}"><span class="mr-2">
+                                        <img src="../../../../../assets/images/alert/dispatchteam.svg"></span>Dispatch
+                                        Team</li> -->
+                                    <!-- <li (click)="(dataItem.rightsdetails.isabletohandlealert) ? ActionTaken('boxhandlealert',dataItem):null"
+                                    [ngClass]="{'disabled-link' : (!dataItem.rightsdetails.isabletohandlealert)}"><span class="mr-2">
+                                        <img src="../../../../../assets/images/alert/handlealert.svg"></span>Handle
+                                        Alert</li>
+                                    <li (click)="ActionTaken('boxshowdetails',dataItem)"><span class="mr-2"><img
+                                                src="../../../../../assets/images/alert/showdetails.svg"></span>Show
+                                        Details</li> -->
+                                    <!-- <li (click)="(dataItem.rightsdetails.isabletocollaborate) ? ActionTaken('boxcollaborate',dataItem):null"
+                                    [ngClass]="{'disabled-link' : (!dataItem.rightsdetails.isabletocollaborate)}"><span class="mr-2">
+                                        <img  src="../../../../../assets/images/alert/collaborate.svg"></span>Collaborate
+                                    </li> -->
+                                    <!-- <li (click)="(dataItem.rightsdetails.isabletodismiss) ? ActionTaken('boxdismissalert',dataItem):null"
+                                    [ngClass]="{'disabled-link' : (!dataItem.rightsdetails.isabletodismiss)}"><span class="mr-2">
+                                        <img  src="../../../../../assets/images/alert/dismiss.svg"></span>Dismiss</li> -->
+                                </ul>
+                            </div>
+                            <a href="javascript:;" class="px-1 actionButton" kendoTooltip position="bottom" title="Acknowledge">
+                                <img src="../../../../../assets/images/alert/tick-lightgrey.svg" disabled class="disabled-link"
+                                    *ngIf="!dataItem.isacknowledgedoncurrent && !dataItem.rightsdetails.isabletoacknowledge"
+                                    title="N/A">
+                                <img src="../../../../../assets/images/alert/tick-grey.svg" *ngIf="!dataItem.isacknowledgedoncurrent && dataItem.rightsdetails.isabletoacknowledge"
+                                    title="Acknowledged here" (click)="OpenConfirmation(dataItem)">
+                                <img src="../../../../../assets/images/alert/tick-blue.svg" disabled class="disabled-link"
+                                    *ngIf="dataItem.isacknowledgedoncurrent" title="Acknowledged">
+                            </a>
+                            <a href="javascript:;" class="px-1 actionButton">
+                                <img src="../../../../../assets/images/alert/sop-lightexecute.svg" disabled class="disabled-link"
+                                    *ngIf="!(dataItem.caseid && dataItem.caseid > 0) && !dataItem.rightsdetails.isabletochoosecase"
+                                    title="N/A">
+                                <img src="../../../../../assets/images/alert/sop-execute.svg" *ngIf="dataItem.rightsdetails.isabletochoosecase"
+                                    title="Choose SOP here" (click)="ActionTaken('boxsopexecute',dataItem)">
+                                <img src="../../../../../assets/images/alert/sop-executeblue.svg" disabled class="disabled-link"
+                                    *ngIf="dataItem.caseid && dataItem.caseid > 0" title="SOP Executed">
+                            </a>
+                            <!-- <img src="../../../../../assets/images/alert/details.svg"> -->
+                            <a href="javascript:;" kendoTooltip position="bottom" title="Alert Details" (click)="ActionTaken('boxshowdetails',dataItem)"
+                                class="px-1 actionButton">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 19.206 19.205">
+                                    <defs></defs>
+                                    <g transform="translate(-58.019 -635)">
+                                        <path fill="" class="svgFillColorInfo" d="M67.627,635a9.6,9.6,0,1,1-9.608,9.524A9.613,9.613,0,0,1,67.627,635Zm.925,10.919q0-1.684,0-3.368a.931.931,0,1,0-1.859,0q0,3.368,0,6.735a.932.932,0,1,0,1.859,0Q68.553,647.6,68.552,645.919Zm-.928-5.145a.924.924,0,0,0,.927-.932.93.93,0,0,0-1.859.006A.919.919,0,0,0,67.624,640.774Z"
+                                            transform="translate(0)" />
+                                    </g>
+                                </svg>
+                            </a>
+                            <a href="javascript:;" kendoTooltip position="bottom" title="Handle Alert" class="px-1 actionButton"
+                                (click)="(dataItem.rightsdetails.isabletohandlealert) ? ActionTaken('boxhandlealert',dataItem):null"
+                                [ngClass]="{'disabled-link' : (!dataItem.rightsdetails.isabletohandlealert)}">
+                                <img src="../../../../../assets/images/alert/handlealert.svg"></a>
+                        </ng-template>
+                    </kendo-grid-column>
+                    <!-- <kendo-grid-column width="100px" field="alertdetailsid" title="Alert Id"></kendo-grid-column> -->
+
+
+                    <kendo-grid-column field="alertdetailsid" title="Alert Id" width="100px">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <span [ngStyle]="{'color': dataItem.parentId != 0 && dataItem.parentId != null ? 'red' : 'default'}">
+                                {{ dataItem.alertdetailsid }}
+                            </span>
+                        </ng-template>
+                    </kendo-grid-column>
+
+
+                    <!-- <kendo-grid-column width="100px" field="duplicate_count" title="Dublicate Alerts Count">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <span class="alert-badge" (click)="open(dataItem)">
+                                {{ dataItem.duplicate_count }}
+                            </span>
+                        </ng-template>
+                    </kendo-grid-column> -->
+
+                    <!-- <kendo-grid-column width="100px" field="parentId" title="Linked Alert">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <span class="alert-linked" (click)="open(dataItem)">
+                                {{ dataItem.parentId }}
+                            </span>
+                        </ng-template>
+                    </kendo-grid-column> -->
+                    <kendo-grid-column width="140px" field="parentId" title="Duplicate with linked Alert">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            {{ dataItem.parentId === 0 ? '' : dataItem.parentId }}
+                        </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column width="120px" field="domainname" title="Domain Name"></kendo-grid-column>
+                    <kendo-grid-column width="120px" field="alertname" title="Alert Name"></kendo-grid-column>
+                    <kendo-grid-column width="110px" field="assetid" title="Asset Name"></kendo-grid-column>
+                    <kendo-grid-column title="Alert Description" width="200px">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <div class="elipsis-hidden-width" kendoTooltip position="top" [tooltipWidth]="250" [title]="dataItem.description">
+                                {{ dataItem.description }}
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- Description Code to limit the lenght of Description
+                        -->
+                    <!-- <kendo-grid-column field="description" title="Alert Description">
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                            <div *ngIf="dataItem.description.length>50" >
+                                <label kendoTooltip tooltipWidth="500" [title]="dataItem.description">
+                                 <span>{{ (dataItem.description.length>50)? (dataItem.description | slice:0:50)+'..':(dataItem.description) }}</span>
+                                </label>
+                                </div>
+                                <div *ngIf="dataItem.description.length<50" >
+                                    <label>
+                                        <span> {{dataItem.description }}  </span>
+                                    </label>
+                                </div>
+                        </ng-template>
+                    </kendo-grid-column> -->
+                    <!-- Description Code to limit the lenght of Description -->
+                    <kendo-grid-column width="140px" field="orgname" title="Org. Name"></kendo-grid-column>
+                    <kendo-grid-column width="100px" field="ismanual" title="Is Manual">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <div class="text-center">
+                                {{ (dataItem.ismanual)? 'Yes':'No' }}
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+                    <!-- <kendo-grid-column width="100px" field="islinked" title="Is Linked With Social Media"></kendo-grid-column> -->
+                    <kendo-grid-column width="180px" field="alertdate" title="Time Stamp">
+                        <!-- <ng-template kendoGridCellTemplate let-dataItem>
+                            <div class="text-center">
+                                {{ (dataItem.alertdate+'Z') | date : datetimeFormat  }}
+                            </div>
+                        </ng-template> -->
+                    </kendo-grid-column>
+                    <kendo-grid-column width="100px" field="severity" title="Priority">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <!-- <div class="{{ (dataItem.severitycolor != '') ? 'current-severity' : 'no-severity'  }} p-1 text-center"
+                                [style.backgroundColor]="colorCodepraority(dataItem.severity)">
+                                {{ dataItem.severity }}
+                            </div> -->
+                            <div class="{{ (dataItem.severitycolor != '') ? 'current-severity' : 'no-severity'  }} p-1 text-center"
+                                [style.backgroundColor]="dataItem.severitycolor!=''?dataItem.severitycolor:colorCodepraority(dataItem.severity)">
+                                {{ dataItem.severity }}
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column width="160px" field="linkedsopname" title="Linked SOP">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <div class="elipsis-hidden-width" kendoTooltip position="top" [tooltipWidth]="250" [title]="dataItem.linkedsopname">
+                                {{ dataItem.linkedsopname }}
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column width="140px" field="alteredsopsnamne" title="Altered SOP"></kendo-grid-column>
+                    <kendo-grid-column width="200px" field="isacknowledgedoncurrent" title="Acknowledged by Current Level">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <div class="text-center">
+                                {{ (dataItem.isacknowledgedoncurrent)? 'Yes':'No' }}
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column width="200px" field="currentescalationlevel" title="Current Escalation Level">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <div class="text-center">
+                                {{ dataItem.currentescalationlevel }}
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column width="180px" field="owneroncurrent" title="Current Owner">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <div class="elipsis-hidden-width" kendoTooltip position="top" [tooltipWidth]="250" [title]="dataItem.owneroncurrent">
+                                {{ dataItem.owneroncurrent }}
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column width="180px" field="totaldurationspent" title="Total Duration Spent">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <div class="text-center">
+                                {{ dataItem.totaldurationspent }}
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column width="100px" field="currentstatus" title="Current Status">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <div class="current-status p-1 text-center" [style.backgroundColor]="colorCode(dataItem.currentstatus)">
+                                {{ dataItem.currentstatus }}
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
+                    <ng-template kendoPagerTemplate let-totalPages="totalPages" let-currentPage="currentPage">
+                        <kendo-pager-prev-buttons></kendo-pager-prev-buttons>
+                        <kendo-pager-numeric-buttons [buttonCount]="3"></kendo-pager-numeric-buttons>
+                        <kendo-pager-info></kendo-pager-info>
+                        <kendo-pager-next-buttons></kendo-pager-next-buttons>
+                        <kendo-pager-page-sizes [pageSizes]="pageSizes"></kendo-pager-page-sizes>
+                    </ng-template>
+                </kendo-grid>
+                <div *ngIf="isShow" class="k-i-loading"></div>
+
+                <!-- used for Exporting in HTML -->
+                <div hidden class="mynewdiv">
+                    <div class="mynewdivnew" style="font-family: TTTravel;">
+                        <div class="page-template">
+                            <div class="header" style="padding-bottom: 40px;">
+                                <div style="float: right">
+                                    <!-- <img src="../../../../assets/images/Outline_SmartCity.svg" alt="amnex logo" width=55 height=10/> -->
+                                    <img [src]="amnexHeaderpath" alt="Outline logo" style="width: 200px;height:60px ;" />
+                                </div>
+                                <div style="float: left;">
+                                    <img [src]="clientheaderpath" alt="Client logo" style="height:70px ;" />
+                                </div>
+                                <div style="margin-top:20px; margin-bottom: 10px;padding-bottom: 50px;width:80%">
+                                    <table align="left" style="width:100%;text-align: left;">
+                                        <tr style="width:100%;">
+                                            <td style="width:100%;">Page Name: Alert List View</td>
+                                        </tr>
+                                        <tr style="width:100%;">
+                                            <td style="width:100%;">Page Date: {{ ReportDate | date: 'dd-MM-yyyy
+                                                h:mm:ss a'}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <table style="border-collapse: collapse;border: 1px solid #ccc;">
+                            <thead style="background:#eee;">
+                                <tr>
+                                    <th>Alert Id</th>
+                                    <th>Duplicate with linked Alert</th>
+                                    <th>Domain Name</th>
+                                    <th>Alert Name</th>
+                                    <th>Asset Name</th>
+                                    <th>Alert Description</th>
+                                    <th>Organization Name</th>
+                                    <th>Is Manual</th>
+                                    <!-- <th>Is Linked With Social Media</th> -->
+                                    <th>Time Stamp</th>
+                                    <th>Priority</th>
+                                    <th>Linked SOP</th>
+                                    <th>Altered SOP</th>
+                                    <th>Acknowledged by Current Level</th>
+                                    <th>Current Escalation Level</th>
+                                    <th>Current Owner</th>
+                                    <th>Total Duration Spent</th>
+                                    <th>Current Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let people of finalGridData; let i = index;">
+                                    <td style="border-bottom: 1px solid #ccc;">{{people.alertdetailsid}}</td>
+                                    <td style="border-bottom: 1px solid #ccc;">{{people.parentId}}</td>
+                                    <td style="border-bottom: 1px solid #ccc;">{{people.domainname}}</td>
+                                    <td style="border-bottom: 1px solid #ccc;">{{people.alertname}}</td>
+                                    <td style="border-bottom: 1px solid #ccc;">{{people.assetid}}</td>
+                                    <td style="border-bottom: 1px solid #ccc;">{{people.description}}</td>
+                                    <td style="border-bottom: 1px solid #ccc;">{{people.orgname}}</td>
+                                    <td style="border-bottom: 1px solid #ccc;">{{people.ismanual}}</td>
+                                    <!-- <td style="border-bottom: 1px solid #ccc;">{{people.islinked}}</td> -->
+                                    <td style="border-bottom: 1px solid #ccc;">{{people.alertdate}}</td>
+                                    <td style="border-bottom: 1px solid #ccc;">
+                                        <div class="{{ (people.severitycolor != '') ? 'current-severity' : 'no-severity'  }} p-1 text-center"
+                                            [style.backgroundColor]="people.severitycolor!=''?people.severitycolor:colorCodepraority(people.severity)">
+                                            {{ people.severity }}
+                                        </div>
+                                    </td>
+                                    <td style="border-bottom: 1px solid #ccc;">{{people.linkedsopname}}</td>
+                                    <td style="border-bottom: 1px solid #ccc;">{{people.alteredsopsnamne}}</td>
+                                    <td style="border-bottom: 1px solid #ccc;">{{ (people.isacknowledgedoncurrent)?
+                                        'Yes':'No' }}</td>
+                                    <td style="border-bottom: 1px solid #ccc;">{{people.currentescalationlevel}}</td>
+                                    <td style="border-bottom: 1px solid #ccc;">{{people.owneroncurrent}}</td>
+                                    <td style="border-bottom: 1px solid #ccc;">{{people.totaldurationspent}}</td>
+                                    <td style="border-bottom: 1px solid #ccc;">
+                                        <div class="current-status p-1 text-center" [style.backgroundColor]="colorCode(people.currentstatus)">
+                                            {{ people.currentstatus }}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- used for Exporting in HTML end-->
+                <kendo-dialog class="productadd-client expand_card" title=" " *ngIf="acknowledgeAlertzone" (close)="closeConfirmation()"
+                    [minWidth]="350" [width]="380">
+                    <div class="col-12 text-center">
+                        <h4 class="innerHeading pt-3">Do you want to acknowledge this alert?</h4>
+                        <div class="w-100 pb-3">
+                            <button kendoButton class="k-button k-primary mr-2" (click)="acknowledgeAlertSuccess()">Yes</button>
+                            <button kendoButton class="k-button k-primary" (click)="closeConfirmation()">No</button>
+                        </div>
+                    </div>
+                </kendo-dialog>
+
+                <div *ngIf="boxActionFlag != ''" class="k-overlay"></div>
+
+                <div class="product-rightsidebyside" *ngIf="boxActionFlag =='boxhandlealert'">
+                    <ngx-alertmapdetail></ngx-alertmapdetail>
+                </div>
+
+                <div class="product-rightsidebox" *ngIf="boxActionFlag !=='' && boxActionFlag !='boxLinkalert'">
+                    <ngx-sopexecute *ngIf="boxActionFlag =='boxsopexecute'"></ngx-sopexecute>
+                    <ngx-editalert *ngIf="boxActionFlag =='boxeditalert'"></ngx-editalert>
+                    <ngx-showdetails *ngIf="boxActionFlag =='boxshowdetails'"></ngx-showdetails>
+                    <ngx-collaborate *ngIf="boxActionFlag =='boxcollaborate'"></ngx-collaborate>
+                    <ngx-dismissalert *ngIf="boxActionFlag =='boxdismissalert'"></ngx-dismissalert>
+                    <ngx-handlealert *ngIf="boxActionFlag =='boxhandlealert'"></ngx-handlealert>
+                    <ngx-sharealert *ngIf="boxActionFlag =='boxsharealert'"></ngx-sharealert>
+                    <ngx-dispatchteam *ngIf="boxActionFlag =='boxdispatchteam'"></ngx-dispatchteam>
+                    <ngx-terminatesop *ngIf="boxActionFlag =='boxterminatesop'"></ngx-terminatesop>
+                    <ngx-alertsop *ngIf="boxActionFlag =='boxalertsop'"></ngx-alertsop>
+                    <ngx-changepriority *ngIf="boxActionFlag =='boxchangepriority'"></ngx-changepriority>
+                    <ngx-changestatus *ngIf="boxActionFlag =='boxchangestatus'"></ngx-changestatus>
+                </div>
+                <div class="product-rightsideboxnew" *ngIf="boxActionFlag =='boxLinkalert'">
+                    <ngx-linkalert></ngx-linkalert>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+<!-- <kendo-dialog class="px-0" title="{{dialogTitle}}" *ngIf="opened" (close)="close('cancel')"
+    [minWidth]="250" [width]="768">
+    <test-messageconfigurationdialog></test-messageconfigurationdialog>
+   
+
+    </kendo-dialog>
+<div kendoDialogContainer></div> -->
+
+
+<kendo-dialog class="productadd-client" title="Link Alerts" *ngIf="opened" (close)="close('cancel')" [minWidth]="250"
+    [width]="600">
+    <ngx-linkalertnew></ngx-linkalertnew>
+</kendo-dialog>
